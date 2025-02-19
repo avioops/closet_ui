@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key});
+  final String label;
+  CustomButton({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class CustomButton extends StatelessWidget {
         height: MediaQuery.of(context).size.height * 0.055,
         child: ElevatedButton(
           onPressed: () {
-            print("Next button pressed");
+            print("Button Pressed");
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFFAD16AA),
@@ -22,7 +23,7 @@ class CustomButton extends StatelessWidget {
             elevation: 0,
           ),
           child: Text(
-            "NEXT",
+            label,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),

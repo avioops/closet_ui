@@ -3,14 +3,13 @@ import 'package:closet_ui/common_widget/custom_dropdown.dart';
 import 'package:closet_ui/common_widget/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CheckoutPage extends StatelessWidget {
   CheckoutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomeScreen());
+    return HomeScreen();
   }
 }
 
@@ -121,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            CustomButton(),
+            CustomButton(label: 'NEXT'),
           ],
         ),
       ),
