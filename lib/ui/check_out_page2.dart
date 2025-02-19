@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:closet_ui/common_widget/custom_button.dart';
 import 'package:closet_ui/common_widget/custom_dropdown.dart';
 import 'package:closet_ui/common_widget/custom_text_form_field.dart';
+import 'package:closet_ui/ui/dialog_screen.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -144,7 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              CustomButton(label: 'Make Payment'),
+              CustomButton(
+                label: 'Make Payment',
+                onpress: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => DialogScreen()),
+                  );
+                },
+              ),
             ],
           ),
         ),

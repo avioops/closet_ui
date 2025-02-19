@@ -1,6 +1,7 @@
 import 'package:closet_ui/common_widget/custom_button.dart';
 import 'package:closet_ui/common_widget/custom_dropdown.dart';
 import 'package:closet_ui/common_widget/custom_text_form_field.dart';
+import 'package:closet_ui/ui/check_out_page2.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -120,7 +121,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            CustomButton(label: 'NEXT'),
+            CustomButton(
+              label: 'NEXT',
+              onpress: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => CheckOutPage2()),
+                );
+              },
+            ),
           ],
         ),
       ),

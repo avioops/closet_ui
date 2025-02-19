@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;
-  CustomButton({super.key, required this.label});
+  final VoidCallback onpress;
+  CustomButton({super.key, required this.label, required this.onpress});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,7 @@ class CustomButton extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.055,
         child: ElevatedButton(
-          onPressed: () {
-            print("Button Pressed");
-          },
+          onPressed: onpress,
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFFAD16AA),
             shape: RoundedRectangleBorder(
