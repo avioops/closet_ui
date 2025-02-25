@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DialogScreen extends StatelessWidget {
-  const DialogScreen({super.key});
+  final VoidCallback onNext;
+  const DialogScreen({super.key, required this.onNext});
 
   @override
   Widget build(BuildContext context) {
