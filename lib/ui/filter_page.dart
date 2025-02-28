@@ -6,8 +6,10 @@ class FilterPage extends StatefulWidget {
   _FilterPageState createState() => _FilterPageState();
 }
 
-class _FilterPageState extends State<FilterPage> {
+class _FilterPageState extends State<FilterPage>
+    with SingleTickerProviderStateMixin {
   double _priceValue = 100;
+  late TabController _tabController; // Declare TabController
 
   final List<String> tabTitles = [
     "Lowest",
@@ -27,160 +29,195 @@ class _FilterPageState extends State<FilterPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: tabTitles.length, vsync: this);
+
+    // Add a listener to the TabController to update the UI on index change
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose(); // Dispose the TabController
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabTitles.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Search Filters"),
-          leading: IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(
-              100,
-            ), // Adjusted height for the space
-            child: Column(
-              children: [
-                // Row for "Sort By" and "All Clear"
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Sort By",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Search Filters"),
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(95),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 11.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Sort By",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "All Clear",
-                          style: TextStyle(color: Color(0xFFAD16AA)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // TabBar
-                Container(
-                  // color: Color(0xFFFFDBFE),
-                  child: TabBar(
-                    tabAlignment: TabAlignment.start,
-                    dividerColor: Colors.transparent,
-                    isScrollable: true, // Disable scrolling for fixed width
-                    labelPadding: EdgeInsets.zero, // Remove default padding
-                    labelColor: Colors.white, // Color for selected tab
-                    unselectedLabelColor:
-                        Colors.black, // Color for unselected tab
-                    indicator: BoxDecoration(
-                      color: Color(0xFFAD16AA), // Selected tab color
-                      borderRadius: BorderRadius.circular(
-                        8,
-                      ), // Rounded corners for indicator
                     ),
-                    tabs:
-                        tabTitles.map((title) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              top: 3,
-                              bottom: 3,
-                              right: 4.0,
-                              left: 4.0,
-                            ),
-                            child: Tab(
-                              child: Container(
-                                alignment:
-                                    Alignment.center, // Center text in the tab
-                                width: 80, // Fixed width for each tab
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black12,
-                                    width: 1,
-                                  ), // Border for partition
-                                  borderRadius: BorderRadius.circular(
-                                    8,
-                                  ), // Rounded corners
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "All Clear",
+                        style: TextStyle(
+                          color: Color(0xFFAD16AA),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // TabBar with the controller set to _tabController
+              Container(
+                child: TabBar(
+                  dividerColor: Colors.transparent,
+                  controller: _tabController, // Using the TabController
+                  tabAlignment: TabAlignment.start,
+                  isScrollable: true,
+                  labelPadding: EdgeInsets.zero,
+                  labelColor: Colors.white, // Color for selected tab text
+                  unselectedLabelColor:
+                      Colors.black, // Color for unselected tab text
+                  indicator: BoxDecoration(
+                    color:
+                        Colors
+                            .transparent, // Transparent indicator (we'll handle it manually)
+                  ),
+                  tabs:
+                      tabTitles.map((title) {
+                        int index = tabTitles.indexOf(title);
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: 3,
+                            bottom: 3,
+                            right: 4.0,
+                            left: 4.0,
+                          ),
+                          child: Tab(
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 74,
+                              height: 27,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black12,
+                                  width: 1,
                                 ),
-                                child: Text(title), // Tab title text
+                                borderRadius: BorderRadius.circular(3),
+                                // Conditional background color for selected/unselected tabs
+                                color:
+                                    _tabController.index == index
+                                        ? Color(
+                                          0xFFAD16AA,
+                                        ) // Full purple for selected tab
+                                        : Color(
+                                          0xFFE1B3D9,
+                                        ), // Light purple for unselected tabs
+                              ),
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  color:
+                                      _tabController.index == index
+                                          ? Colors.white
+                                          : Colors.black,
+                                ),
                               ),
                             ),
-                          );
-                        }).toList(), // Convert iterable to list
-                  ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: List.generate(tabTitles.length, (index) {
+          return Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Price",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Slider(
+                  value: _priceValue,
+                  min: 20,
+                  max: 200,
+                  divisions: 9,
+                  activeColor: Colors.blue,
+                  inactiveColor: Colors.grey,
+                  onChanged: (value) {
+                    setState(() {
+                      _priceValue = value;
+                    });
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text("\$20"), Text("\$200")],
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Categories",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                ...categories[index]
+                    .map(
+                      (item) => _categoryItem(item, categories[index].length),
+                    )
+                    .toList(),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(label: "Apply Filters", onpress: () {}),
                 ),
               ],
             ),
-          ),
-        ),
-        body: TabBarView(
-          children: List.generate(tabTitles.length, (index) {
-            return Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Price",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Slider(
-                    value: _priceValue,
-                    min: 20,
-                    max: 200,
-                    divisions: 9,
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.grey,
-                    onChanged: (value) {
-                      setState(() {
-                        _priceValue = value;
-                      });
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text("\$20"), Text("\$200")],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Categories",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  // Pass dynamic item count from categories
-                  ...categories[index]
-                      .map(
-                        (item) => _categoryItem(item, categories[index].length),
-                      )
-                      .toList(),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CustomButton(label: "Apply Filter", onpress: () {}),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ),
+          );
+        }),
       ),
     );
   }
 
-  // Updated method to receive dynamic item count
   Widget _categoryItem(String title, int itemCount) {
     return ListTile(
-      leading: Icon(Icons.shopping_bag, color: Colors.blue),
+      visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+      contentPadding: EdgeInsets.all(0),
+      leading: Icon(Icons.shopping_bag, color: Colors.blue, size: 18),
       title: Text(title),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Dynamically show the item count
-          Text("$itemCount Items", style: TextStyle(color: Colors.grey)),
-          Icon(Icons.chevron_right, color: Colors.grey),
+          Text(
+            "$itemCount Items",
+            style: TextStyle(color: Colors.grey, fontSize: 14),
+          ),
+          Icon(Icons.chevron_right, color: Colors.grey, size: 18),
         ],
       ),
       onTap: () {},
