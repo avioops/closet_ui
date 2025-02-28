@@ -1,41 +1,48 @@
-import 'package:closet_ui/common_widget/custom_stepper_learn.dart';
 import 'package:closet_ui/ui/check_out_page1.dart';
 import 'package:closet_ui/ui/check_out_page2.dart';
 import 'package:closet_ui/ui/dialog_screen.dart';
 import 'package:flutter/material.dart';
 
-class StepperDemoLearn extends StatelessWidget {
+class StepperDemoLearn extends StatefulWidget {
   const StepperDemoLearn({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return HomeScreen();
-  }
+  _StepperDemoLearnState createState() => _StepperDemoLearnState();
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class _StepperDemoLearnState extends State<StepperDemoLearn> {
+  int _currentStep = 0; // Track the current step
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentStep = 1;
   // Function to move to the next step
   void _onNextStep() {
     if (_currentStep < 2) {
-      // Only go to the next step if we're not at the last step
       setState(() {
         _currentStep++; // Increment the step
       });
     }
   }
 
+  // Function to navigate to the previous step
+  void _onPreviousStep() {
+    if (_currentStep > 0) {
+      setState(() {
+        _currentStep--; // Decrement the step
+      });
+    }
+  }
+
+  // Show the dialog when on the last step (payment step)
+  void _showPaymentDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const DialogScreen(), // Show the DialogScreen here
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Checkout")),
+      appBar: AppBar(title: const Text("Checkout")),
       body: Stepper(
         type: StepperType.horizontal,
         currentStep: _currentStep,
@@ -46,14 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         steps: [
           Step(
-            title: Text("Delivery"),
+            title: const Text("Delivery"),
             content: CheckoutPage(onNext: _onNextStep),
             isActive: _currentStep >= 0,
             state: _currentStep > 0 ? StepState.complete : StepState.indexed,
           ),
           Step(
-            title: Text("Address"),
-            content: CheckOutPage2(onNext: _onNextStep),
+            title: const Text("Address"),
+            content: CheckoutPage(onNext: _onNextStep),
             isActive: _currentStep >= 1,
             state:
                 _currentStep == 1
@@ -63,14 +70,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         : StepState.indexed),
           ),
           Step(
-            title: Text("Payment"),
-            content: SizedBox.shrink(),
+            title: const Text("Payment"),
+            content: CheckOutPage2(
+              onNext: _onNextStep,
+              onPayment: _showPaymentDialog, // Pass the function to show dialog
+              onPrevious:
+                  _onPreviousStep, // Callback to go back to the previous step
+            ),
             isActive: _currentStep >= 2,
             state: _currentStep == 2 ? StepState.indexed : StepState.indexed,
           ),
         ],
         controlsBuilder: (context, details) {
-          return SizedBox();
+          return const SizedBox(); // Optional: Customize the controls here
         },
       ),
     );

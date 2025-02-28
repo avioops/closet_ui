@@ -1,5 +1,6 @@
 import 'package:closet_ui/ui/check_out_page1.dart';
 import 'package:closet_ui/ui/check_out_page2.dart';
+import 'package:closet_ui/ui/filter_page.dart';
 import 'package:closet_ui/ui/stepper_demo_learn.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: StepperDemoLearn(),
+      home: FilterPage(),
     );
   }
 }

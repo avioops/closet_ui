@@ -1,17 +1,16 @@
-import 'package:closet_ui/common_widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:closet_ui/common_widget/custom_button.dart';
 
 class DialogScreen extends StatelessWidget {
-  final VoidCallback onNext;
-  const DialogScreen({super.key, required this.onNext});
+  const DialogScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Column(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             backgroundColor: Colors.green,
             child: Icon(Icons.done, color: Colors.white),
           ),
@@ -23,12 +22,9 @@ class DialogScreen extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          Text(
+          const Text(
             "Your order #987533456789 is successfully placed",
-            style: GoogleFonts.robotoCondensed(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             textAlign: TextAlign.center,
           ),
           CustomButton(

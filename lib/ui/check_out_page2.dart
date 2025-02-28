@@ -1,36 +1,30 @@
-import 'dart:developer';
+import 'dart:ui';
+
 import 'package:closet_ui/common_widget/custom_button.dart';
 import 'package:closet_ui/common_widget/custom_dropdown.dart';
 import 'package:closet_ui/common_widget/custom_text_form_field.dart';
-import 'package:closet_ui/ui/dialog_screen.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CheckOutPage2 extends StatelessWidget {
-  final VoidCallback onNext; // Callback for moving to the next step
-
-  CheckOutPage2({super.key, required this.onNext}); // Constructor
-
-  @override
-  Widget build(BuildContext context) {
-    return CheckOutPage2Screen(onNext: onNext);
-  }
-}
-
-// ✅ Renamed this class to prevent conflict with `HomeScreen` in StepperDemoLearn
-class CheckOutPage2Screen extends StatefulWidget {
+class CheckOutPage2 extends StatefulWidget {
   final VoidCallback onNext;
+  final VoidCallback onPayment;
+  final VoidCallback onPrevious;
 
-  const CheckOutPage2Screen({super.key, required this.onNext});
+  const CheckOutPage2({
+    super.key,
+    required this.onNext,
+    required this.onPayment,
+    required this.onPrevious,
+  });
 
   @override
-  State<CheckOutPage2Screen> createState() => _CheckOutPage2ScreenState();
+  State<CheckOutPage2> createState() => _CheckOutPage2ScreenState();
 }
 
-class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
-  int selectedIndex = -1; // No option selected initially
-  final dropDownKey = GlobalKey<DropdownSearchState>();
+class _CheckOutPage2ScreenState extends State<CheckOutPage2> {
+  int selectedIndex = -1;
   final List<String> paymentTitles = [
     "Cash on Delivery",
     "Credit Card",
@@ -45,6 +39,7 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            // Payment Method Selection
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -74,6 +69,7 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
                 }),
               ),
             ),
+            // Card Holder Name
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomTextFormField(
@@ -82,16 +78,16 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
                 labelText: 'Card Holder Name',
               ),
             ),
+            // Card Number
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomTextFormField(
                 hintText: 'XXXXXXXXXXXXXX',
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: false,
-                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: false),
                 labelText: 'Card Number',
               ),
             ),
+            // Expiry Date and CVV
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -119,7 +115,9 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
                 ),
               ],
             ),
-            CustomDropDownButton(dropDownKey: dropDownKey),
+            // Dropdown for additional options (like billing address)
+            CustomDropDownButton(dropDownKey: GlobalKey<DropdownSearchState>()),
+            // Save Card Option Checkbox
             Row(
               children: [
                 Checkbox(
@@ -141,16 +139,19 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
                 ),
               ],
             ),
+            // Action Buttons (Go Back and Make Payment)
             Row(
               children: [
-                Expanded(child: CustomButton(label: 'Go Back', onpress: () {})),
+                Expanded(
+                  child: CustomButton(
+                    label: 'Go Back',
+                    onpress: widget.onPrevious, // Navigate to the previous step
+                  ),
+                ),
                 Expanded(
                   child: CustomButton(
                     label: 'Make Payment',
-                    onpress: () {
-                      widget
-                          .onNext(); // ✅ Call the callback to move to the next step
-                    },
+                    onpress: widget.onPayment, // Trigger the payment dialog
                   ),
                 ),
               ],
@@ -161,6 +162,7 @@ class _CheckOutPage2ScreenState extends State<CheckOutPage2Screen> {
     );
   }
 
+  // Helper method to create the payment selection cards
   Widget buildPaymentCard({
     required String title,
     required String location,
